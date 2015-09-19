@@ -111,7 +111,7 @@ echo "(q) - quit"
 echo ""
 echo -n "(Default: autodetect) Choose an option; " ; read PACKAGE
    if [ "${PACKAGE:-NO_VALUE}" == "NO_VALUE" ] ; then
-       
+
       # Detect the arch of the system if variable
       # 'AR' is empty.
       archs=`uname -m`
@@ -136,7 +136,7 @@ echo -n "(Default: autodetect) Choose an option; " ; read PACKAGE
         echo "Unsupported Arquitecture ($archs)"
         exit 0
       esac
-      
+
    elif [ "$PACKAGE" == "1" -o "$PACKAGE" == "32" ] ; then
     cd /tmp/
     wget -c $URL_SPOTIFY/$SPOTIFY_32
@@ -144,7 +144,7 @@ echo -n "(Default: autodetect) Choose an option; " ; read PACKAGE
     rm -rf $SPOTIFY_32
     echo "Exiting..."
     MENU_VARIABLE=3
-   
+
    elif [ "$PACKAGE" == "2" -o "$PACKAGE" == "64" ] ; then
     cd /tmp/
     wget -c $URL_SPOTIFY/$SPOTIFY_64
@@ -152,13 +152,13 @@ echo -n "(Default: autodetect) Choose an option; " ; read PACKAGE
     rm -rf $SPOTIFY_64
     echo "Exiting..."
     MENU_VARIABLE=3
-   
+
    elif [ "$PACKAGE" == "q" -o "$PACKAGE" == "quit" ] ; then
     echo "Exiting..."
     MENU_VARIABLE=3
-   
+
    else
-    clear  
+    clear
     echo ""
     echo "Invalid option, please, choose any available arch"
     echo ""
