@@ -19,3 +19,9 @@ How to use:
    # cd desktop
    # cp -rf spotify-client.png /usr/share/icons/
    # cp -rf spotify.desktop /usr/local/share/applications/
+   
+Screenshot:
+-----------
+
+.. image:: https://raw.githubusercontent.com/clamsawd/spotify-debian-ubuntu/master/screenshots/screenshot.png
+    :align: center
