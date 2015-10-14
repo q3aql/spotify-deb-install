@@ -7,11 +7,11 @@ Spotify (Latest) for Debian/Ubuntu
     * Open the terminal.
     * Clone the repository: `git clone https://github.com/clamsawd/spotify-debian-ubuntu.git`
     * Change directory: `cd spotify-debian-ubuntu`
-    * Change the permissions: `chmod +x install-spotify.sh`
-    * Run the script as root: `./install-spotify.sh`
-    * (_**Optional**_) Change directory: `cd desktop`
-    * (_**Optional**_) Copy image to system: `cp -rf spotify-client.png /usr/share/icons/`
-    * (_**Optional**_) Copy desktop file to system: `cp -rf spotify.desktop /usr/local/share/applications/`     
+    * Change the permissions: `chmod +x spotify-deb-install`
+    * Run the script as root: `./spotify-deb-install`
+    * _**(Optional)**_ Change directory: `cd desktop`
+    * _**(Optional)**_ Copy image to system: `cp -rf spotify-client.png /usr/share/icons/`
+    * _**(Optional)**_ Copy desktop file to system: `cp -rf spotify.desktop /usr/local/share/applications/`     
 
   * **Uninstall instructions:**
     * Open the terminal as root.
