@@ -3,13 +3,13 @@
 # Script to install Spotify on Debian/Ubuntu
 # Created by clamsawd (clamsawd@openmailbox.org)
 # Licensed by GPL v.2
-# Last update: 19-09-2015
+# Last update: 08-01-2015
 # --------------------------------------
-VERSION=0.1
+VERSION=0.2
 SPOTIFY_VERSION=`spotify --version | cut -d "," -f 1`
 URL_SPOTIFY="http://repository.spotify.com/pool/non-free/s/spotify-client"
 
-#Check if user is root
+#Check if user is root.
 user=$(whoami)
  if [ "$user" == "root" ] ; then
      echo "OK" > /dev/null
@@ -18,7 +18,7 @@ user=$(whoami)
      exit 0
  fi
 
-#Check name of kernel
+#Check name of kernel.
 KERNEL=$(uname -s)
  if   [ $KERNEL == "Linux" ]; then
        KERNEL=linux
@@ -27,7 +27,7 @@ KERNEL=$(uname -s)
        exit 0
  fi
 
-#Check if your system is Debian or Ubuntu
+#Check if your system is Debian or Ubuntu.
 CHECK_SYSTEM=`uname -a`
 CHECK_DEBIAN=`uname -a | grep "Debian"`
 CHECK_UBUNTU=`uname -a | grep "Ubuntu"`
@@ -38,9 +38,9 @@ echo "Spotify installer ($VERSION)"
 echo ""
 
 if [ "$CHECK_SYSTEM" == "$CHECK_DEBIAN" ]; then
-      echo "$CHECK_DEBIAN"
+      echo "System detected: $CHECK_DEBIAN"
 elif [ "$CHECK_SYSTEM" == "$CHECK_UBUNTU" ]; then
-      echo "$CHECK_UBUNTU"
+      echo "System detected: $CHECK_UBUNTU"
 else
       echo "Your system is not Debian or Ubuntu!"
       echo -n "(Default: n) Continue anyway? (y/n): " ; read CONTINUE
@@ -54,34 +54,47 @@ fi
 #Check 'curl' in your system.
   curl --help > /dev/null
   if [ "$?" -eq 0 ] ; then
-     echo "curl OK"
      clear
   else
      apt-get update
      apt-get install curl -y
   fi
-#Check 'wget' in your system
+#Check 'wget' in your system.
   wget --help > /dev/null
   if [ "$?" -eq 0 ] ; then
-     echo "wget OK"
+     APP_DOWNLOAD='wget -c'
+     NAME_APP_DOWNLOAD="wget"
      clear
   else
      apt-get update
      apt-get install wget -y
   fi
-#Check 'gdebi' in your system
+#Check 'gdebi' in your system.
   gdebi --help > /dev/null
   if [ "$?" -eq 0 ] ; then
-     echo "gdebi OK"
      clear
   else
      apt-get update
      apt-get install gdebi -y
   fi
+  
+#Check other downloaders.
+  axel --help > /dev/null
+  if [ "$?" -eq 0 ] ; then
+     APP_DOWNLOAD='axel'
+     NAME_APP_DOWNLOAD="axel"
+  fi
+  aria2c --help > /dev/null
+  if [ "$?" -eq 0 ] ; then
+     APP_DOWNLOAD='aria2c --check-certificate=false'
+     NAME_APP_DOWNLOAD="aria2c"
+  fi
 
-#Get the current versions of Spotify
+#Get the current versions of Spotify.
 SPOTIFY_32=`curl $URL_SPOTIFY/ | cut -d ">" -f 2 | cut -d "<" -f 1 | grep i386`
 SPOTIFY_64=`curl $URL_SPOTIFY/ | cut -d ">" -f 2 | cut -d "<" -f 1 | grep amd64`
+MESSAGE_32=`clear && echo "Downloading $SPOTIFY_32 ($NAME_APP_DOWNLOAD)"`
+MESSAGE_64=`clear && echo "Downloading $SPOTIFY_64 ($NAME_APP_DOWNLOAD)"`
  if [ $? -eq 0 ] ; then
    echo "Connection OK" > /dev/null
  else
@@ -118,7 +131,8 @@ echo -n "(Default: autodetect) Choose an option; " ; read PACKAGE
       case "$archs" in
        i?86)
          cd /tmp/
-         wget -c $URL_SPOTIFY/$SPOTIFY_32
+         echo $MESSAGE_32
+         $APP_DOWNLOAD $URL_SPOTIFY/$SPOTIFY_32
          gdebi $SPOTIFY_32
          rm -rf $SPOTIFY_32
          echo "Exiting..."
@@ -126,7 +140,8 @@ echo -n "(Default: autodetect) Choose an option; " ; read PACKAGE
        ;;
        x86_64)
          cd /tmp/
-         wget -c $URL_SPOTIFY/$SPOTIFY_64
+         echo $MESSAGE_64
+         $APP_DOWNLOAD $URL_SPOTIFY/$SPOTIFY_64
          gdebi $SPOTIFY_64
          rm -rf $SPOTIFY_64
          echo "Exiting..."
@@ -139,7 +154,8 @@ echo -n "(Default: autodetect) Choose an option; " ; read PACKAGE
 
    elif [ "$PACKAGE" == "1" -o "$PACKAGE" == "32" ] ; then
     cd /tmp/
-    wget -c $URL_SPOTIFY/$SPOTIFY_32
+    echo $MESSAGE_32
+    $APP_DOWNLOAD $URL_SPOTIFY/$SPOTIFY_32
     gdebi $SPOTIFY_32
     rm -rf $SPOTIFY_32
     echo "Exiting..."
@@ -147,7 +163,8 @@ echo -n "(Default: autodetect) Choose an option; " ; read PACKAGE
 
    elif [ "$PACKAGE" == "2" -o "$PACKAGE" == "64" ] ; then
     cd /tmp/
-    wget -c $URL_SPOTIFY/$SPOTIFY_64
+    echo $MESSAGE_64
+    $APP_DOWNLOAD $URL_SPOTIFY/$SPOTIFY_64
     gdebi $SPOTIFY_64
     rm -rf $SPOTIFY_64
     echo "Exiting..."
@@ -166,5 +183,3 @@ echo -n "(Default: autodetect) Choose an option; " ; read PACKAGE
     read NOOPTION
    fi
 done
-
-
