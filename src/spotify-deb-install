@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# Script to install Spotify on Debian/Ubuntu
-# Created by q3aql (q3aql@openmailbox.org)
-# Licensed by GPL v.2
-# Last update: 03-03-2016
-# --------------------------------------
+##############################################
+# Script to install Spotify on Debian/Ubuntu #
+# Created by q3aql (q3aql@protonmail.ch)     #
+# Licensed by GPL v.2                        #
+# Last update: 28-03-2021                    #
+##############################################
 VERSION=0.2.1
 SPOTIFY_VERSION=`spotify --version | cut -d "," -f 1`
 URL_SPOTIFY="http://repository.spotify.com/pool/non-free/s/spotify-client"
