@@ -1,5 +1,5 @@
 #!/bin/bash
- 
+
 # Script to install Spotify on Debian/Ubuntu
 # Created by q3aql (q3aql@openmailbox.org)
 # Licensed by GPL v.2
@@ -11,21 +11,21 @@ URL_SPOTIFY="http://repository.spotify.com/pool/non-free/s/spotify-client"
 
 #Check if user is root.
 user=$(whoami)
- if [ "$user" == "root" ] ; then
-     echo "OK" > /dev/null
- else
-     echo "You must be root!"
-     exit 0
- fi
+if [ "$user" == "root" ] ; then
+  echo "OK" > /dev/null
+else
+  echo "You must be root!"
+  exit 0
+fi
 
 #Check name of kernel.
 KERNEL=$(uname -s)
- if   [ $KERNEL == "Linux" ]; then
-       KERNEL=linux
- else
-       echo "OS not supported ($KERNEL)"
-       exit 0
- fi
+if   [ $KERNEL == "Linux" ]; then
+  KERNEL=linux
+else
+  echo "OS not supported ($KERNEL)"
+  exit 0
+fi
 
 #Check if your system is Debian or Ubuntu.
 CHECK_SYSTEM=`uname -a`
@@ -38,121 +38,121 @@ echo "Spotify installer ($VERSION)"
 echo ""
 
 if [ "$CHECK_SYSTEM" == "$CHECK_DEBIAN" ]; then
-      echo "System detected: $CHECK_DEBIAN"
+  echo "System detected: $CHECK_DEBIAN"
 elif [ "$CHECK_SYSTEM" == "$CHECK_UBUNTU" ]; then
-      echo "System detected: $CHECK_UBUNTU"
+  echo "System detected: $CHECK_UBUNTU"
 else
-      echo "Your system is not Debian or Ubuntu!"
-      echo -n "(Default: n) Continue anyway? (y/n): " ; read CONTINUE
-       if [ "$CONTINUE" == "y" ]; then
-          echo "$CONTINUE"
-       else
-          exit
-       fi
+  echo "Your system is not Debian or Ubuntu!"
+  echo -n "(Default: n) Continue anyway? (y/n): " ; read CONTINUE
+  if [ "$CONTINUE" == "y" ]; then
+    echo "$CONTINUE"
+  else
+    exit
+  fi
 fi
 
 #Check 'curl' in your system.
-  curl --help > /dev/null
-  if [ "$?" -eq 0 ] ; then
-     clear
-  else
-     apt-get update
-     apt-get install curl -y
-  fi
+curl --help > /dev/null
+if [ "$?" -eq 0 ] ; then
+  clear
+else
+  apt-get update
+  apt-get install curl -y
+fi
 #Check 'wget' in your system.
-  wget --help > /dev/null
-  if [ "$?" -eq 0 ] ; then
-     APP_DOWNLOAD='wget -c'
-     NAME_APP_DOWNLOAD="wget"
-     clear
-  else
-     apt-get update
-     apt-get install wget -y
-  fi
+wget --help > /dev/null
+if [ "$?" -eq 0 ] ; then
+  APP_DOWNLOAD='wget -c'
+  NAME_APP_DOWNLOAD="wget"
+  clear
+else
+  apt-get update
+  apt-get install wget -y
+fi
 #Check 'gdebi' in your system.
-  gdebi --help > /dev/null
-  if [ "$?" -eq 0 ] ; then
-     clear
-  else
-     apt-get update
-     apt-get install gdebi -y
-  fi
-  
+gdebi --help > /dev/null
+if [ "$?" -eq 0 ] ; then
+  clear
+else
+  apt-get update
+  apt-get install gdebi -y
+fi
+
 #Check other downloaders.
-  axel --help > /dev/null
-  if [ "$?" -eq 0 ] ; then
-     APP_DOWNLOAD='axel'
-     NAME_APP_DOWNLOAD="axel"
-  fi
-  aria2c --help > /dev/null
-  if [ "$?" -eq 0 ] ; then
-     APP_DOWNLOAD='aria2c --check-certificate=false'
-     NAME_APP_DOWNLOAD="aria2c"
-  fi
+axel --help > /dev/null
+if [ "$?" -eq 0 ] ; then
+  APP_DOWNLOAD='axel'
+  NAME_APP_DOWNLOAD="axel"
+fi
+aria2c --help > /dev/null
+if [ "$?" -eq 0 ] ; then
+  APP_DOWNLOAD='aria2c --check-certificate=false'
+  NAME_APP_DOWNLOAD="aria2c"
+fi
 
 #Get the current versions of Spotify.
 SPOTIFY_32=`curl $URL_SPOTIFY/ | cut -d ">" -f 2 | cut -d "<" -f 1 | grep i386 | tail -n 1`
 SPOTIFY_64=`curl $URL_SPOTIFY/ | cut -d ">" -f 2 | cut -d "<" -f 1 | grep amd64 | tail -n 1`
 MESSAGE_32=`clear && echo "Downloading $SPOTIFY_32 ($NAME_APP_DOWNLOAD)"`
 MESSAGE_64=`clear && echo "Downloading $SPOTIFY_64 ($NAME_APP_DOWNLOAD)"`
- if [ $? -eq 0 ] ; then
-   echo "Connection OK" > /dev/null
- else
+if [ $? -eq 0 ] ; then
+  echo "Connection OK" > /dev/null
+else
   clear
   echo ""
   echo "Error: Failed to obtain the required information from the server!"
   echo "Connection Fail!"
   echo ""
   exit
- fi
+fi
 
 #Menu
 MENU_VARIABLE=1
 while [ $MENU_VARIABLE -le 2 ] ; do
-clear
-echo ""
-echo "Spotify installer ($VERSION)"
-echo ""
-echo "Installed: $SPOTIFY_VERSION"
-echo ""
-echo "Available packages:"
-echo ""
-echo "(1) $SPOTIFY_32 (32-bits)"
-echo "(2) $SPOTIFY_64 (64-bits)"
-echo ""
-echo "(q) - quit"
-echo ""
-echo -n "(Default: autodetect) Choose an option; " ; read PACKAGE
-   if [ "${PACKAGE:-NO_VALUE}" == "NO_VALUE" ] ; then
+  clear
+  echo ""
+  echo "Spotify installer ($VERSION)"
+  echo ""
+  echo "Installed: $SPOTIFY_VERSION"
+  echo ""
+  echo "Available packages:"
+  echo ""
+  echo "(1) $SPOTIFY_32 (32-bits)"
+  echo "(2) $SPOTIFY_64 (64-bits)"
+  echo ""
+  echo "(q) - quit"
+  echo ""
+  echo -n "(Default: autodetect) Choose an option; " ; read PACKAGE
+  if [ "${PACKAGE:-NO_VALUE}" == "NO_VALUE" ] ; then
 
-      # Detect the arch of the system if variable
-      # 'PACKAGE' is empty.
-      archs=`uname -m`
-      case "$archs" in
-       i?86)
-         cd /tmp/
-         echo $MESSAGE_32
-         $APP_DOWNLOAD $URL_SPOTIFY/$SPOTIFY_32
-         gdebi $SPOTIFY_32
-         rm -rf $SPOTIFY_32
-         echo "Exiting..."
-         MENU_VARIABLE=3
-       ;;
-       x86_64)
-         cd /tmp/
-         echo $MESSAGE_64
-         $APP_DOWNLOAD $URL_SPOTIFY/$SPOTIFY_64
-         gdebi $SPOTIFY_64
-         rm -rf $SPOTIFY_64
-         echo "Exiting..."
-         MENU_VARIABLE=3
+    # Detect the arch of the system if variable
+    # 'PACKAGE' is empty.
+    archs=`uname -m`
+    case "$archs" in
+      i?86)
+      cd /tmp/
+      echo $MESSAGE_32
+      $APP_DOWNLOAD $URL_SPOTIFY/$SPOTIFY_32
+      gdebi $SPOTIFY_32
+      rm -rf $SPOTIFY_32
+      echo "Exiting..."
+      MENU_VARIABLE=3
+      ;;
+      x86_64)
+      cd /tmp/
+      echo $MESSAGE_64
+      $APP_DOWNLOAD $URL_SPOTIFY/$SPOTIFY_64
+      gdebi $SPOTIFY_64
+      rm -rf $SPOTIFY_64
+      echo "Exiting..."
+      MENU_VARIABLE=3
       ;;
       *)
-        echo "Unsupported Arquitecture ($archs)"
-        exit 0
-      esac
+      echo "Unsupported Arquitecture ($archs)"
+      exit 0
+    esac
 
-   elif [ "$PACKAGE" == "1" -o "$PACKAGE" == "32" ] ; then
+  elif [ "$PACKAGE" == "1" -o "$PACKAGE" == "32" ] ; then
     cd /tmp/
     echo $MESSAGE_32
     $APP_DOWNLOAD $URL_SPOTIFY/$SPOTIFY_32
@@ -161,7 +161,7 @@ echo -n "(Default: autodetect) Choose an option; " ; read PACKAGE
     echo "Exiting..."
     MENU_VARIABLE=3
 
-   elif [ "$PACKAGE" == "2" -o "$PACKAGE" == "64" ] ; then
+  elif [ "$PACKAGE" == "2" -o "$PACKAGE" == "64" ] ; then
     cd /tmp/
     echo $MESSAGE_64
     $APP_DOWNLOAD $URL_SPOTIFY/$SPOTIFY_64
@@ -170,16 +170,16 @@ echo -n "(Default: autodetect) Choose an option; " ; read PACKAGE
     echo "Exiting..."
     MENU_VARIABLE=3
 
-   elif [ "$PACKAGE" == "q" -o "$PACKAGE" == "quit" ] ; then
+  elif [ "$PACKAGE" == "q" -o "$PACKAGE" == "quit" ] ; then
     echo "Exiting..."
     MENU_VARIABLE=3
 
-   else
+  else
     clear
     echo ""
     echo "Invalid option, please, choose any available arch"
     echo ""
     echo "Press 'ENTER' to return"
     read NOOPTION
-   fi
+  fi
 done
